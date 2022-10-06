@@ -1,11 +1,11 @@
 import { RequestHandler } from "express";
 import { db } from "../datastore";
 
-export const listPostsHandler: RequestHandler = (_, res) => {
-  res.send({ posts: db.listPost() });
+export const listPostsHandler: RequestHandler = async (_, res) => {
+  res.send({ posts: await db.listPost() });
 };
 
-export const createPostHandler: RequestHandler = (req, res) => {
+export const createPostHandler: RequestHandler = async (req, res) => {
   const post = req.body;
   if (!post.title || !post.url || !post.userId) {
     return res.sendStatus(400);
@@ -14,6 +14,6 @@ export const createPostHandler: RequestHandler = (req, res) => {
   post["id"] = "123";
   post["postedAt"] = "123456";
 
-  db.createPost(post);
+  await db.createPost(post);
   res.status(200).send("post created successfully");
 };
