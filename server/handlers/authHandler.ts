@@ -4,7 +4,7 @@ import { db } from "../datastore";
 import { SignInResponse, SignupRequest, SignupResponse } from "../api";
 
 import crypto from "crypto";
-import { SignInRequest } from "./../api";
+import { SignInRequest } from "../api";
 
 // signup handler
 export const singUpHandler: expressHandler<

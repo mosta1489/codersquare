@@ -1,3 +1,4 @@
+// RequestHandler is type of requesthandler or middleware
 import { RequestHandler } from "express";
 
 export interface User {
