@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-empty-interface */
-import { Post } from "./types";
+import { Post, User } from "./types";
 
 // Post APIs
 export interface ListPostRequest {}
@@ -14,3 +14,18 @@ export interface GetPostRequest {}
 export interface GetPostResponse {
   post: Post;
 }
+
+// User APIs
+export type SignupRequest = Pick<
+  User,
+  "firstname" | "lastname" | "username" | "email" | "password"
+>;
+export interface SignupResponse {}
+export interface SignInRequest {
+  login: string; //username or email
+  password: string;
+}
+export type SignInResponse = Pick<
+  User,
+  "firstname" | "lastname" | "username" | "email" | "id"
+>;
