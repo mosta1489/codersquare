@@ -19,13 +19,17 @@ export class SqlDataStore implements Datastore {
 
     return Promise.resolve(posts);
   }
-  createPost(post: Post): Promise<void> {
+  async createPost(post: Post): Promise<void> {
     const newPost: string[] = [];
     Object.entries(post).forEach(([_, value]) => {
       newPost.push(value);
     });
 
-    DB.query("INSERT INTO posts VALUES($1, $2, $3, $4, $5)", newPost);
+    await DB.query(
+      "INSERT INTO posts VALUES($1, $2, $3, $4, $5) RETURNING *",
+      newPost
+    );
+
     return Promise.resolve();
   }
   async getPost(id: string): Promise<Post | undefined> {

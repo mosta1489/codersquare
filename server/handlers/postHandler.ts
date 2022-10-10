@@ -1,19 +1,36 @@
-import { RequestHandler } from "express";
+import { expressHandler, Post } from "../types";
 import { db } from "../datastore";
+import {
+  CreatePostRequest,
+  CreatePostResponse,
+  ListPostRequest,
+  ListPostResponse,
+} from "../api";
+import crypto from "crypto";
 
-export const listPostsHandler: RequestHandler = async (_, res) => {
-  res.send({ posts: await db.listPost() });
+export const listPostsHandler: expressHandler<
+  ListPostResponse,
+  ListPostRequest
+> = async (_, res) => {
+  const posts: Post[] = await db.listPost();
+  res.send(posts);
 };
 
-export const createPostHandler: RequestHandler = async (req, res) => {
-  const post = req.body;
-  if (!post.title || !post.url || !post.userId) {
+export const createPostHandler: expressHandler<
+  CreatePostRequest,
+  CreatePostResponse
+> = async (req, res) => {
+  if (!req.body.title || !req.body.url || !req.body.userId) {
     return res.sendStatus(400);
   }
 
-  post["id"] = "123";
-  post["postedAt"] = "123456";
-
+  const post: Post = {
+    id: crypto.randomUUID(),
+    title: req.body.title,
+    url: req.body.url,
+    userId: req.body.userId,
+    postedAt: Date.now(),
+  };
   await db.createPost(post);
-  res.status(200).send("post created successfully");
+  res.sendStatus(200);
 };
