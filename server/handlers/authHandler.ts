@@ -5,6 +5,7 @@ import { SignInResponse, SignupRequest, SignupResponse } from "../api";
 
 import crypto from "crypto";
 import { SignInRequest } from "../api";
+import { signJwt } from "./../auth";
 
 // signup handler
 export const singUpHandler: expressHandler<
@@ -13,13 +14,13 @@ export const singUpHandler: expressHandler<
 > = async (req, res) => {
   const { firstname, lastname, username, email, password } = req.body;
   if (!firstname || !lastname || !username || !email || !password) {
-    return res.status(400).send("all fields are required");
+    return res.status(400).send({ error: "all fields are required" });
   }
 
   const existing =
     (await db.getUserByEmail(email)) || (await db.getUserByUsername(username));
   if (existing) {
-    return res.status(403).send("user already exists");
+    return res.status(403).send({ error: "user already exists" });
   }
 
   const user: User = {
@@ -30,8 +31,9 @@ export const singUpHandler: expressHandler<
     email,
     password,
   };
+  const jwt = signJwt({ userId: user.id });
   await db.createUser(user);
-  return res.status(200).send("user created successfully");
+  return res.status(200).send({ jwt });
 };
 
 export const singInHandler: expressHandler<
@@ -40,19 +42,27 @@ export const singInHandler: expressHandler<
 > = async (req, res) => {
   const { login, password } = req.body;
   if (!login || !password) {
-    return res.sendStatus(400);
+    return res
+      .status(400)
+      .send({ error: "missing values username or password" });
   }
 
   const existing =
     (await db.getUserByEmail(login)) || (await db.getUserByUsername(login));
   if (!existing || existing.password !== password) {
-    return res.sendStatus(403);
+    return res.status(403).send({ error: "incorrect username or password" });
   }
+
+  const jwt = signJwt({ userId: existing.id });
+
   return res.status(200).send({
-    email: existing.email,
-    firstname: existing.firstname,
-    lastname: existing.lastname,
-    username: existing.username,
-    id: existing.id,
+    user: {
+      email: existing.email,
+      firstname: existing.firstname,
+      lastname: existing.lastname,
+      username: existing.username,
+      id: existing.id,
+    },
+    jwt: jwt,
   });
 };

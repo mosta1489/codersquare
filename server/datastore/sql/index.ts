@@ -31,7 +31,6 @@ export class SqlDataStore implements Datastore {
   }
 
   async listPost(): Promise<Post[]> {
-    // throw new Error(`Method not implemented`);
     const posts: Post[] = (await DB.query("SELECT * FROM posts")).rows;
 
     return Promise.resolve(posts);

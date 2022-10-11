@@ -9,11 +9,11 @@ import {
 import crypto from "crypto";
 
 export const listPostsHandler: expressHandler<
-  ListPostResponse,
-  ListPostRequest
+  ListPostRequest,
+  ListPostResponse
 > = async (_, res) => {
   const posts: Post[] = await db.listPost();
-  res.send(posts);
+  return res.send({ posts });
 };
 
 export const createPostHandler: expressHandler<
