@@ -30,6 +30,13 @@ export class SqlDataStore implements Datastore {
     return Promise.resolve(user);
   }
 
+  async getUserById(id: string): Promise<User | undefined> {
+    const user: User = await (
+      await DB.query("SELECT * FROM users WHERE id=$1 ", [id])
+    ).rows[0];
+    return Promise.resolve(user);
+  }
+
   async listPost(): Promise<Post[]> {
     const posts: Post[] = (await DB.query("SELECT * FROM posts")).rows;
 

@@ -20,7 +20,7 @@ export const createPostHandler: expressHandler<
   CreatePostRequest,
   CreatePostResponse
 > = async (req, res) => {
-  if (!req.body.title || !req.body.url || !req.body.userId) {
+  if (!req.body.title || !req.body.url) {
     return res.sendStatus(400);
   }
 
@@ -28,7 +28,10 @@ export const createPostHandler: expressHandler<
     id: crypto.randomUUID(),
     title: req.body.title,
     url: req.body.url,
-    userId: req.body.userId,
+    //==============
+    userId: res.locals.userId,
+    //==============
+
     postedAt: Date.now(),
   };
   await db.createPost(post);

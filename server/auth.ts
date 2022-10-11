@@ -13,7 +13,9 @@ function getJwtSecret(): string {
 }
 
 export function signJwt(obj: jwtObject): string {
-  return jwt.sign(obj, getJwtSecret());
+  return jwt.sign(obj, getJwtSecret(), {
+    expiresIn: "1d",
+  });
 }
 
 export function verifyJwt(token: string): jwtObject {

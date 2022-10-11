@@ -8,6 +8,7 @@ import { singInHandler, singUpHandler } from "./handlers/authHandler";
 import { initDb } from "./datastore";
 import { requestLoggerMiddleware } from "./middlewares/loggerMiddleware";
 import { errHanler } from "./middlewares/errorMiddleware";
+import { authMiddleware } from "./middlewares/authMiddleware";
 
 (async () => {
   await initDb();
@@ -19,10 +20,15 @@ import { errHanler } from "./middlewares/errorMiddleware";
   app.use(requestLoggerMiddleware);
 
   // wrap handler by asyncErrorHandler because there are async func
-  app.get("/v1/posts", asyncHandler(listPostsHandler));
-  app.post("/v1/posts", asyncHandler(createPostHandler));
+  // Public endpoints
   app.post("/v1/signup", asyncHandler(singUpHandler));
   app.post("/v1/signin", asyncHandler(singInHandler));
+
+  app.use(authMiddleware);
+
+  // Protected endpoint
+  app.get("/v1/posts", asyncHandler(listPostsHandler));
+  app.post("/v1/posts", asyncHandler(createPostHandler));
 
   app.use(errHanler);
 
