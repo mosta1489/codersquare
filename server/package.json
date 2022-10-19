@@ -4,11 +4,15 @@
   "description": "",
   "main": "server.ts",
   "scripts": {
-    "start": "nodemon server.ts"
+    "start": "nodemon server.ts",
+    "start:prod": "pm2 delete codersquare; pm2 start --name codersquare \"npx ts-node --transpile-only server.ts\""
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
+  "compilerOptions": {
+    "module": "CommonJS"
+  },
   "dependencies": {
     "dotenv": "^16.0.3",
     "express": "^4.18.1",

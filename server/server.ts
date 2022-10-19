@@ -9,6 +9,8 @@ import { initDb } from "./datastore";
 import { requestLoggerMiddleware } from "./middlewares/loggerMiddleware";
 import { errHanler } from "./middlewares/errorMiddleware";
 import { authMiddleware } from "./middlewares/authMiddleware";
+import dotenv from "dotenv";
+dotenv.config();
 
 (async () => {
   await initDb();
@@ -21,6 +23,9 @@ import { authMiddleware } from "./middlewares/authMiddleware";
 
   // wrap handler by asyncErrorHandler because there are async func
   // Public endpoints
+  app.get("/healthz", (_, res) => {
+    res.send({ status: "✌️" });
+  });
   app.post("/v1/signup", asyncHandler(singUpHandler));
   app.post("/v1/signin", asyncHandler(singInHandler));
 
@@ -32,5 +37,5 @@ import { authMiddleware } from "./middlewares/authMiddleware";
 
   app.use(errHanler);
 
-  app.listen(3000);
+  app.listen(process.env.PORT || 3000);
 })();
